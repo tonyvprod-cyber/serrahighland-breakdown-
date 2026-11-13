@@ -180,9 +180,10 @@ document.getElementById('f').addEventListener('submit',function(e){
     sb.disabled=false;
     msg.innerHTML='We couldn\u2019t save online. <a style="color:#fff" href="mailto:atuppins@TonySerraHighlandNissan.com?subject='+encodeURIComponent('Customer Needs Analysis – '+(d.name||''))+'&body='+encodeURIComponent(summary(d))+'">Tap here to send it by email</a>.';
   }
-  if(!db||!uid){fallback();return}
-  var id=uid;
-  Promise.resolve(db.collection('leads').doc(id).set(d)).then(done).catch(fallback);
+   fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+    .then(function(r){return r.json()})
+    .then(function(j){if(j&&j.ok){done()}else{fallback()}})
+    .catch(fallback);
 });
 })();
 </script>
