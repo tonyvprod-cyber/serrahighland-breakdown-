@@ -1,0 +1,16 @@
+{
+  "name": "serrahighland-breakdown",
+  "main": "worker.js",
+  "compatibility_date": "2025-01-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "needs-analysis1",
+      "database_id": "a885dfab-5652-4fa2-adfe-a11b187f7450"
+    }
+  ]
+}
