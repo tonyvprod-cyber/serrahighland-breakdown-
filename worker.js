@@ -5,25 +5,29 @@ export default {
     if (url.pathname === "/api/submit" && request.method === "POST") {
       try {
         const d = await request.json();
-        const features = Array.isArray(d.features_desired) ? d.features_desired.join(", ") : (d.features_desired || "");
-        const colors = Array.isArray(d.preferred_colors) ? d.preferred_colors.join(", ") : (d.preferred_colors || "");
+        const s = (v) => Array.isArray(v) ? v.join(", ") : String(v || "");
+
+        const currentVehicle = [d.year, d.make, d.model].filter(Boolean).join(" ");
+        const tradeInfo = "Bank: " + s(d.bank) + " | Payoff: " + s(d.payoff) + " | Title in hand: " + s(d.Title) + " | Both keys: " + s(d["Both keys"]) + " | Desired value: " + s(d.value) + " | KBB ICO: " + s(d["KBB ICO"]);
+        const financeGoals = "Down: " + s(d.down) + " | Monthly: " + s(d.pay);
 
         await env.DB.prepare(
-          "INSERT INTO submissions (name, phone, email, current_vehicle, trade_info, vehicle_condition, vehicle_type, features_desired, preferred_colors, deal_type, term, annual_miles, finance_goals) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+          "INSERT INTO submissions (name, phone, email, current_vehicle, trade_info, vehicle_condition, vehicle_type, features_desired, preferred_colors, deal_type, term, annual_miles, finance_goals, full_data) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         ).bind(
-          d.name || "",
-          d.phone || "",
-          d.email || "",
-          d.current_vehicle || "",
-          d.trade_info || "",
-          d.vehicle_condition || "",
-          d.vehicle_type || "",
-          features,
-          colors,
-          d.deal_type || "",
-          d.term || "",
-          d.annual_miles || "",
-          d.finance_goals || ""
+          s(d.name),
+          s(d.phone),
+          s(d.email),
+          currentVehicle,
+          tradeInfo,
+          s(d.Condition),
+          s(d.Type),
+          s(d.Features),
+          s(d.colors),
+          s(d.Transaction),
+          s(d.Term),
+          s(d["Lease miles"]),
+          financeGoals,
+          JSON.stringify(d)
         ).run();
 
         return Response.json({ ok: true });
