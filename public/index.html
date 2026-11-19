@@ -161,7 +161,18 @@ document.querySelectorAll('.chips input[type=radio]').forEach(function(r){
 });
 var db=null,uid=null;
 try{ if(window.claude&&claude.use){claude.use('db').then(function(d){db=d;return claude.use('user')}).then(function(u){return u&&u.id()}).then(function(i){uid=i}).catch(function(){})} }catch(e){}
-function collect(){
+['payoff','value','down','pay'].forEach(function(id){
+  var el=document.getElementById(id);
+  el.addEventListener('blur',function(){
+    var n=el.value.replace(/[^0-9.]/g,'');
+    if(n){el.value='$'+Number(n).toLocaleString('en-US')}
+  });
+});
+document.getElementById('phone').addEventListener('blur',function(){
+  var p=this.value.replace(/\D/g,'');
+  if(p.length===10){this.value=p.slice(0,3)+'-'+p.slice(3,6)+'-'+p.slice(6)}
+});
+  function collect(){
   var d={};
   ['name','phone','email','year','make','model','vin','miles','like','wish','bank','payoff','value','colors','nocolor','down','pay'].forEach(function(k){d[k]=document.getElementById(k).value.trim()});
   document.querySelectorAll('.chips[data-name]').forEach(function(c){
